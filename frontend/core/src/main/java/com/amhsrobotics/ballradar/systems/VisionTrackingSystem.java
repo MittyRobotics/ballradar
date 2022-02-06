@@ -18,10 +18,6 @@ public class VisionTrackingSystem extends EntitySystem {
 
     private static final double MIN_CONFIDENCE = 0.8;
 
-    public VisionTrackingSystem() {
-
-    }
-
     @Override
     public void addedToEngine(Engine engine) {
     }

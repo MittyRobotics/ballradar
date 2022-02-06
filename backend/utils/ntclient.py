@@ -1,9 +1,26 @@
 from networktables import NetworkTables
+import threading
+
+cond = threading.Condition()
+notified = [False]
+
+def connectionListener(connected, info):
+    print(info, '; Connected=%s' % connected)
+    with cond:
+        notified[0] = True
+        cond.notify()
 
 NetworkTables.initialize(server='127.0.0.1')
-print("initialized networktables")
+NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
+
+with cond:
+    print("Waiting for NetworkTables Server")
+    if not notified[0]:
+        cond.wait()
+
+print("Connected To Server!")
 table = NetworkTables.getTable('ballradar')
-print("found ball radar table")
+
 
 def add_ball(string):
     table.putString('balldata', string)
