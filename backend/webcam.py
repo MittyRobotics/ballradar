@@ -18,7 +18,7 @@ from utils.general import (check_img_size, check_imshow, non_max_suppression, sc
 from utils.plots import Annotator, colors
 from utils.torch_utils import select_device, time_sync
 from utils.math import doMath
-
+from utils import ntclient
 
 @torch.no_grad()
 def run():
@@ -49,7 +49,7 @@ def run():
     imgsz = check_img_size(imgsz, s=stride)
 
     # Dataloader
-    view_img = check_imshow() 
+    view_img = True
     cudnn.benchmark = True  # set True to speed up constant image size inference
     dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt)
 
@@ -79,18 +79,22 @@ def run():
 
             p = Path(p)
 
-            # gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]
             annotator = Annotator(im0, line_width=line_thickness, example=str(names))
+            ntclient.clear()
+
             if len(det):
                 det[:, :4] = scale_coords(im.shape[2:], det[:, :4], im0.shape).round()
 
-                for *xyxy, conf, cls in reversed(det):
+                ballString = ""
 
-                    if save_crop or view_img:
-                        c = int(cls)
-                        label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
-                        annotator.box_label(xyxy, label, color=colors(c, True))
-                        doMath(xyxy, label)
+                for *xyxy, conf, cls in reversed(det):
+                    c = int(cls)
+                    label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
+                    annotator.box_label(xyxy, label, color=colors(c, True))
+
+                    ballString += doMath(xyxy, label)
+
+                ntclient.add_ball(ballString)
 
             im0 = annotator.result()
             if view_img:

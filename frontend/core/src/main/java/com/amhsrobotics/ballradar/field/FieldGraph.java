@@ -39,7 +39,6 @@ public class FieldGraph {
 
                 renderer.line(new Vector3(i, 0, -(MAX_PIXELS / 2)), new Vector3(i, 0, MAX_PIXELS / 2)); // z
                 renderer.line(new Vector3(-(MAX_PIXELS / 2), 0, j), new Vector3(MAX_PIXELS / 2, 0, j)); // x
-
             }
         }
 

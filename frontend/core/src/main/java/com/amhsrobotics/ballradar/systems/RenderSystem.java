@@ -28,20 +28,6 @@ public class RenderSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         ModelComponent model = mc.get(entity);
-
-        if(model.instance.userData == null) {
-            String data = NetworkTablesServer.getBallData();
-            if(!data.equals("none") && !data.equals("nan")) {
-                String[] bd = data.split(" ");
-                float distance = Float.parseFloat(bd[0]);
-                float angle = Float.parseFloat(bd[1]);
-                String label = bd[2];
-                Vector2 v = FieldGraph.polarToWorldCoordinates(angle, distance);
-
-                model.instance.transform.setToTranslation(v.x, 0, v.y);
-            }
-        }
-
         batch.render(model.instance, environment);
 
     }

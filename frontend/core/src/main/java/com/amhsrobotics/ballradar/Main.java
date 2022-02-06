@@ -6,6 +6,7 @@ import com.amhsrobotics.ballradar.managers.CameraManager;
 import com.amhsrobotics.ballradar.managers.EntityFactory;
 import com.amhsrobotics.ballradar.managers.ModelFactory;
 import com.amhsrobotics.ballradar.systems.RenderSystem;
+import com.amhsrobotics.ballradar.systems.VisionTrackingSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -20,7 +21,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Main extends ApplicationAdapter {
 
-	private Engine engine;
+	public static Engine engine;
 
 	private ModelBatch batch;
 	private Environment env;
@@ -61,6 +62,7 @@ public class Main extends ApplicationAdapter {
 	}
 
 	private void initSystems() {
+		engine.addSystem(new VisionTrackingSystem());
 		engine.addSystem(new RenderSystem(batch, env));
 	}
 

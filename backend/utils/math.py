@@ -1,13 +1,6 @@
-from dis import dis
 import numpy as np
-from networktables import NetworkTables
 
-NetworkTables.initialize(server='127.0.0.1')
-print("initialized networktables")
-table = NetworkTables.getTable('ballradar')
-print("found ball radar table")
-
-def doMath(xyxy, label):
+def doMath(xyxy, ballcolor):
 
     resolution = (640, 480)
     center = (resolution[0]/2, resolution[1]/2)
@@ -36,4 +29,6 @@ def doMath(xyxy, label):
         distance = (distance_x + distance_y) / 2
         distance *= 0.0254
 
-        table.putString('ball', str(distance) + " " + str(angle_x) + " " + label)
+        return str(distance) + "," + str(angle_x) + "," + ballcolor.split(" ")[0] + "," + ballcolor.split(" ")[1] + " "
+
+    return ""

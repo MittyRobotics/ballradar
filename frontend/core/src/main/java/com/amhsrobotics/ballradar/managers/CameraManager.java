@@ -57,7 +57,7 @@ public class CameraManager {
         topAngleUp = new Vector3(persCam.up);
 
         assistPosition = new Vector3(0, 50, persCam.position.z + 40);
-        assistAngle = new Vector3(persCam.direction.x, persCam.direction.y , persCam.direction.z - 1);
+        assistAngle = new Vector3(persCam.direction.x, persCam.direction.y, persCam.direction.z - 1);
         assistAngleUp = new Vector3(persCam.up.x, persCam.up.y , persCam.up.z - 1);
 
         center = new Vector3(0, 50f, 0);

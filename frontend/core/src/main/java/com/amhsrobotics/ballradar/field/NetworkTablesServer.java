@@ -1,6 +1,9 @@
 package com.amhsrobotics.ballradar.field;
 
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+
+import java.util.Set;
 
 public class NetworkTablesServer {
 
@@ -13,6 +16,7 @@ public class NetworkTablesServer {
     }
 
     public static String getBallData() {
-        return inst.getTable("ballradar").getEntry("ball").getString("none");
+        return inst.getTable("ballradar").getEntry("balldata").getString("none");
     }
+
 }
