@@ -14,7 +14,7 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 from models.common import DetectMultiBackend
 from utils.datasets import LoadStreams
-from utils.general import (check_img_size, check_imshow, non_max_suppression, scale_coords)
+from utils.general import (check_img_size, non_max_suppression, scale_coords)
 from utils.plots import Annotator, colors
 from utils.torch_utils import select_device, time_sync
 from utils.math import doMath
@@ -29,8 +29,6 @@ def run():
     iou_thres=0.45  # NMS IOU threshold
     max_det=1000  # maximum detections per image
     device=''  # cuda device, i.e. 0 or 0,1,2,3 or cpu
-    view_img=False  # show results
-    save_crop=False  # save cropped prediction boxes
     classes=None  # filter by class: --class 0, or --class 0 2 3
     agnostic_nms=False  # class-agnostic NMS
     augment=False  # augmented inference
@@ -95,6 +93,9 @@ def run():
                     ballString += doMath(xyxy, label)
 
                 ntclient.add_ball(ballString)
+            
+            if not ntclient.check_connected():
+                ntclient.table = ntclient.waitForConnection()
 
             im0 = annotator.result()
             if view_img:

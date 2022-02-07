@@ -51,6 +51,7 @@ public class CameraManager {
         topCam.position.set(0, 80f, 0);
         topCam.lookAt(0, 0, 0);
         topCam.update();
+        topCam.zoom = 3;
 
         topPosition = new Vector3(persCam.position);
         topAngle = new Vector3(persCam.direction);

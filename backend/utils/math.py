@@ -1,4 +1,8 @@
+import math
 import numpy as np
+
+# height of camera in meters
+cam_height = 0.8128
 
 def doMath(xyxy, ballcolor):
 
@@ -58,6 +62,11 @@ def doMath(xyxy, ballcolor):
 
         distance *= 0.0254
 
-        return str(distance) + "," + str(angle_x) + "," + ballcolor.split(" ")[0] + "," + ballcolor.split(" ")[1] + " "
+        # distance^2 = height^2 + ground_distance^2
+        ground_distance = math.sqrt(distance**2 - cam_height**2)
+        print(ground_distance, distance)
+
+
+        return str(ground_distance) + "," + str(angle_x) + "," + ballcolor.split(" ")[0] + "," + ballcolor.split(" ")[1] + " "
 
     return ""
