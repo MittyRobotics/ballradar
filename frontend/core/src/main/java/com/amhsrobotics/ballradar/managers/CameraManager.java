@@ -40,15 +40,15 @@ public class CameraManager {
     public CameraManager() {
 
         persCam = new PerspectiveCamera(FOV, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        persCam.position.set(0, 50f, 0f);
+        persCam.position.set(0, 80f, 0f);
         persCam.lookAt(0, 0, 0);
         persCam.near = 1f;
-        persCam.far = 700f;
+        persCam.far = 760f;
         persCam.update();
 
         topCam = new OrthographicCamera();
         topCam.setToOrtho(false, Gdx.graphics.getWidth() / ORTHO_DIVISOR, Gdx.graphics.getHeight() / ORTHO_DIVISOR);
-        topCam.position.set(0, 50f, 0);
+        topCam.position.set(0, 80f, 0);
         topCam.lookAt(0, 0, 0);
         topCam.update();
 
@@ -56,11 +56,11 @@ public class CameraManager {
         topAngle = new Vector3(persCam.direction);
         topAngleUp = new Vector3(persCam.up);
 
-        assistPosition = new Vector3(0, 50, persCam.position.z + 40);
+        assistPosition = new Vector3(0, 80, persCam.position.z + 40);
         assistAngle = new Vector3(persCam.direction.x, persCam.direction.y, persCam.direction.z - 1);
         assistAngleUp = new Vector3(persCam.up.x, persCam.up.y , persCam.up.z - 1);
 
-        center = new Vector3(0, 50f, 0);
+        center = new Vector3(0, 80f, 0);
 
         selectedCamera = topCam;
 

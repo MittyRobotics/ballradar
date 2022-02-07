@@ -1,9 +1,6 @@
 package com.amhsrobotics.ballradar.field;
 
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
-import java.util.Set;
 
 public class NetworkTablesServer {
 

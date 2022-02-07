@@ -13,7 +13,9 @@ public class ModelComponent implements Component {
     public ModelComponent(Model model, float x, float y, float z) {
         this.model = model;
         instance = new ModelInstance(model, new Matrix4().setToTranslation(x, y, z));
+    }
 
-
+    public void setPosition(float x, float y, float z) {
+        instance.transform.setToTranslation(x, y, z);
     }
 }

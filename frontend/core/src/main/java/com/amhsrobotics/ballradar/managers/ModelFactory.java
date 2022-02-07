@@ -28,7 +28,6 @@ public class ModelFactory {
         assetManager = new AssetManager();
         models = new ArrayList<>();
 
-
 //        assetManager.load("robot.g3db", Model.class);
 //        assetManager.finishLoading();
 
@@ -52,7 +51,7 @@ public class ModelFactory {
     }
 
     public static Model generateRobot() {
-        Model m = objLoader.loadModel(Gdx.files.internal("robot.obj"), true);
+        Model m = objLoader.loadModel(Gdx.files.internal("robot.simplified.obj"), true);
         models.add(m);
 
         return m;

@@ -5,15 +5,15 @@ def doMath(xyxy, ballcolor):
     resolution = (640, 480)
     center = (resolution[0]/2, resolution[1]/2)
 
-    bounding_btm_left_x = (int(xyxy[0])) - center[0]
-    bounding_btm_left_y = (int(xyxy[1])) - center[1]
-    bounding_top_right_x = (int(xyxy[2])) - center[0]
-    bounding_top_right_y = (int(xyxy[3])) - center[1]
+    bounding_top_left_x = (int(xyxy[0])) - center[0]
+    bounding_top_left_y = (int(xyxy[1])) - center[1]
+    bounding_btm_right_x = (int(xyxy[2])) - center[0]
+    bounding_btm_right_y = (int(xyxy[3])) - center[1]
 
-    bounding_width = bounding_top_right_x - bounding_btm_left_x
-    bounding_height = bounding_top_right_y - bounding_btm_left_y
+    bounding_width = bounding_btm_right_x - bounding_top_left_x
+    bounding_height = bounding_btm_right_y - bounding_top_left_y
 
-    center_pixel = ((bounding_btm_left_x + bounding_top_right_x) / 2, (bounding_btm_left_y + bounding_top_right_y) / 2)
+    center_pixel = ((bounding_top_left_x + bounding_btm_right_x) / 2, (bounding_top_left_y + bounding_btm_right_y) / 2)
 
     hfov = 52
     vfov = 39
@@ -23,10 +23,39 @@ def doMath(xyxy, ballcolor):
     
     if bounding_width > 0 and bounding_height > 0 and np.sin(angle_x * np.pi/180) != 0 and np.sin(angle_y * np.pi/180) != 0:
 
-        distance_x = (center_pixel[0] / np.sin(angle_x * np.pi/180)) * (9.5 / bounding_width)
-        distance_y = (center_pixel[1] / np.sin(angle_y * np.pi/180)) * (9.5 / bounding_height)
+        distance = 0
 
-        distance = (distance_x + distance_y) / 2
+        clipped_x = False
+        clipped_y = False
+
+        # if ball clipped into left edge, use height for distance
+        if bounding_top_left_x - 2 <= -(resolution[0] / 2):
+            distance = (center_pixel[1] / np.sin(angle_y * np.pi/180)) * (9.5 / bounding_height)
+            clipped_x = True
+        # if ball is clipped into right edge, use height for distance
+        elif bounding_btm_right_x + 2 >= (resolution[0] / 2):
+            distance = (center_pixel[1] / np.sin(angle_y * np.pi/180)) * (9.5 / bounding_height)
+            clipped_x = True
+        # if ball is clipped into bottom edge, use width for distance
+        if bounding_top_left_y - 2 <= -(resolution[1] / 2):
+            distance = (center_pixel[0] / np.sin(angle_x * np.pi/180)) * (9.5 / bounding_width)
+            clipped_y = True
+        # if ball is clipped into top edge, use width for distance
+        elif bounding_btm_right_y + 2 >= (resolution[1] / 2):
+            distance = (center_pixel[0] / np.sin(angle_x * np.pi/180)) * (9.5 / bounding_width)
+            clipped_y = True
+
+        # if ball is in a corner, ignore
+        if clipped_x and clipped_y:
+            return ""
+
+        # if ball is anywhere else, average height and width
+        if not clipped_x and not clipped_y:
+            distance_x = (center_pixel[0] / np.sin(angle_x * np.pi/180)) * (9.5 / bounding_width)
+            distance_y = (center_pixel[1] / np.sin(angle_y * np.pi/180)) * (9.5 / bounding_height)
+
+            distance = (distance_x + distance_y) / 2
+
         distance *= 0.0254
 
         return str(distance) + "," + str(angle_x) + "," + ballcolor.split(" ")[0] + "," + ballcolor.split(" ")[1] + " "
