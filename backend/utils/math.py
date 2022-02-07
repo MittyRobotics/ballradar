@@ -6,25 +6,33 @@ cam_height = 0.8128
 
 def doMath(xyxy, ballcolor):
 
+    # image resolution
     resolution = (640, 480)
+    # center of image
     center = (resolution[0]/2, resolution[1]/2)
 
+    # bounding box of detected ball
     bounding_top_left_x = (int(xyxy[0])) - center[0]
     bounding_top_left_y = (int(xyxy[1])) - center[1]
     bounding_btm_right_x = (int(xyxy[2])) - center[0]
     bounding_btm_right_y = (int(xyxy[3])) - center[1]
 
+    # bounding width and height
     bounding_width = bounding_btm_right_x - bounding_top_left_x
     bounding_height = bounding_btm_right_y - bounding_top_left_y
 
+    # center of bounding box
     center_pixel = ((bounding_top_left_x + bounding_btm_right_x) / 2, (bounding_top_left_y + bounding_btm_right_y) / 2)
 
+    # horizontal & vertical fields of view
     hfov = 52
     vfov = 39
 
+    # angle to center pixel in X and Y directions
     angle_x = (center_pixel[0] / resolution[0]) * hfov
     angle_y = (center_pixel[1] / resolution[1]) * vfov
     
+    # error checking (if bounding box is 0, dividng by 0)
     if bounding_width > 0 and bounding_height > 0 and np.sin(angle_x * np.pi/180) != 0 and np.sin(angle_y * np.pi/180) != 0:
 
         distance = 0
@@ -60,13 +68,14 @@ def doMath(xyxy, ballcolor):
 
             distance = (distance_x + distance_y) / 2
 
+        # convert to meters
         distance *= 0.0254
 
-        # distance^2 = height^2 + ground_distance^2
+        # calculate ground distance using pythagorean theorem
         ground_distance = math.sqrt(distance**2 - cam_height**2)
-        print(ground_distance, distance)
 
-
+        # return string with ball data
         return str(ground_distance) + "," + str(angle_x) + "," + ballcolor.split(" ")[0] + "," + ballcolor.split(" ")[1] + " "
 
+    # ball not detected, return nothing
     return ""
