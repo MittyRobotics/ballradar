@@ -24,7 +24,6 @@ public class VisionTrackingSystem extends EntitySystem {
 
     @Override
     public void removedFromEngine(Engine engine) {
-        super.removedFromEngine(engine);
     }
 
     @Override
@@ -60,8 +59,12 @@ public class VisionTrackingSystem extends EntitySystem {
                                     ModelFactory.generateBall(color.equals("blueball") ? ModelFactory.BallType.BLUE : ModelFactory.BallType.RED), vec.x, 4.75f, vec.y
                             )
                     );
+
+                    Main.engine.addEntity(EntityFactory.createSpline(vec.x, vec.y));
                 }
             }
         }
+//        Main.engine.addEntity(EntityFactory.createEntity(ModelFactory.generateBall(ModelFactory.BallType.RED), 0, 4.75f, 10));
+//        Main.engine.addEntity(EntityFactory.createSpline(-10, -10));
     }
 }

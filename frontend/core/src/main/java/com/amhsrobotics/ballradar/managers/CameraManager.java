@@ -43,7 +43,7 @@ public class CameraManager {
         persCam.position.set(0, 80f, 0f);
         persCam.lookAt(0, 0, 0);
         persCam.near = 1f;
-        persCam.far = 760f;
+        persCam.far = 800f;
         persCam.update();
 
         topCam = new OrthographicCamera();
@@ -53,13 +53,14 @@ public class CameraManager {
         topCam.update();
         topCam.zoom = 3;
 
+
         topPosition = new Vector3(persCam.position);
         topAngle = new Vector3(persCam.direction);
         topAngleUp = new Vector3(persCam.up);
 
         assistPosition = new Vector3(0, 80, persCam.position.z + 40);
         assistAngle = new Vector3(persCam.direction.x, persCam.direction.y, persCam.direction.z - 1);
-        assistAngleUp = new Vector3(persCam.up.x, persCam.up.y , persCam.up.z - 1);
+        assistAngleUp = new Vector3(persCam.up.x, persCam.up.y , persCam.up.z -+ 1);
 
         center = new Vector3(0, 80f, 0);
 

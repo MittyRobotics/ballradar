@@ -1,6 +1,5 @@
 package com.amhsrobotics.ballradar.managers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -17,7 +16,6 @@ public class ModelFactory {
     private static ModelBuilder modelBuilder;
     private static AssetManager assetManager;
     private static ArrayList<Model> models;
-    private static ObjLoader objLoader;
 
     public enum BallType {
         BLUE, RED
@@ -28,10 +26,8 @@ public class ModelFactory {
         assetManager = new AssetManager();
         models = new ArrayList<>();
 
-//        assetManager.load("robot.g3db", Model.class);
-//        assetManager.finishLoading();
-
-        objLoader = new ObjLoader();
+        assetManager.load("robot.simplified.obj", Model.class);
+        assetManager.finishLoading();
     }
 
     public static Model generateBall(BallType type) {
@@ -51,7 +47,7 @@ public class ModelFactory {
     }
 
     public static Model generateRobot() {
-        Model m = objLoader.loadModel(Gdx.files.internal("robot.simplified.obj"), true);
+        Model m = assetManager.get("robot.simplified.obj", Model.class);
         models.add(m);
 
         return m;

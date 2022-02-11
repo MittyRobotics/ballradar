@@ -1,6 +1,11 @@
 package com.amhsrobotics.ballradar.field;
 
 import com.amhsrobotics.ballradar.managers.CameraManager;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -28,9 +33,19 @@ public class FieldGraph {
         return new Vector2((float) x, (float) y);
     }
 
-    public void update() {
+    public void beginRenderer() {
         renderer.setProjectionMatrix(camera.getSelectedCamera().combined);
         renderer.begin(ShapeRenderer.ShapeType.Line);
+    }
+
+    public void endRenderer() {
+        renderer.end();
+    }
+
+    public void update() {
+        Gdx.gl20.glLineWidth(1);
+        beginRenderer();
+
         renderer.setColor(159/255f, 159/255f, 162/255f, 0.1f);
 
         for(int i = -(MAX_PIXELS / 2); i <= MAX_PIXELS / 2; i += PIXELS_PER_METER) {
@@ -41,6 +56,17 @@ public class FieldGraph {
                 renderer.line(new Vector3(-(MAX_PIXELS / 2), 0, j), new Vector3(MAX_PIXELS / 2, 0, j)); // x
             }
         }
+
+        endRenderer();
+
+    }
+
+    public void splineSegment(float x1, float z1, float x2, float z2) {
+        renderer.setProjectionMatrix(camera.getSelectedCamera().combined);
+        renderer.begin(ShapeRenderer.ShapeType.Line);
+
+        Gdx.gl20.glLineWidth(5);
+        renderer.line(new Vector3(x1, 0, z1), new Vector3(x2, 0, z2));
 
         renderer.end();
     }

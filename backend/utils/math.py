@@ -2,7 +2,7 @@ import math
 import numpy as np
 
 # height of camera in meters
-cam_height = 0.8128
+cam_height = 0.75
 
 def doMath(xyxy, ballcolor):
 
@@ -71,10 +71,16 @@ def doMath(xyxy, ballcolor):
         # convert to meters
         distance *= 0.0254
 
-        # calculate ground distance using pythagorean theorem
-        ground_distance = math.sqrt(distance**2 - cam_height**2)
+        ground_distance = 0
 
-        # return string with ball data
+        # calculate ground distance using pythagorean theorem
+        if(distance**2 - cam_height**2 >= 0):
+            ground_distance = math.sqrt(distance**2 - cam_height**2)
+        else:
+            ground_distance = distance
+            
+
+        # return string with ball data          
         return str(ground_distance) + "," + str(angle_x) + "," + ballcolor.split(" ")[0] + "," + ballcolor.split(" ")[1] + " "
 
     # ball not detected, return nothing

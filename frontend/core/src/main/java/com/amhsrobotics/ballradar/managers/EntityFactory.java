@@ -2,6 +2,8 @@ package com.amhsrobotics.ballradar.managers;
 
 import com.amhsrobotics.ballradar.components.BallComponent;
 import com.amhsrobotics.ballradar.components.ModelComponent;
+import com.amhsrobotics.ballradar.components.SplineComponent;
+import com.amhsrobotics.ballradar.components.SplineModelComponent;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Quaternion;
@@ -32,6 +34,25 @@ public class EntityFactory {
         mc.instance.transform.scale(1.26f, 1.26f, 1.26f);
 
         entity.add(mc);
+
+        return entity;
+    }
+
+    public static Entity createSpline(float x, float z) {
+        Entity entity = new Entity();
+        SplineComponent sc = new SplineComponent(x, z);
+
+        entity.add(sc);
+
+        return entity;
+    }
+
+    public static Entity createSplineModel(Model m) {
+        Entity entity = new Entity();
+        ModelComponent mc = new ModelComponent(m, 0, 0, 0);
+
+        entity.add(mc);
+        entity.add(new SplineModelComponent());
 
         return entity;
     }

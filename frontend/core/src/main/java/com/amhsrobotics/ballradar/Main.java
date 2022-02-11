@@ -6,6 +6,8 @@ import com.amhsrobotics.ballradar.managers.CameraManager;
 import com.amhsrobotics.ballradar.managers.EntityFactory;
 import com.amhsrobotics.ballradar.managers.ModelFactory;
 import com.amhsrobotics.ballradar.systems.RenderSystem;
+import com.amhsrobotics.ballradar.systems.SplineModelSystem;
+import com.amhsrobotics.ballradar.systems.SplineSystem;
 import com.amhsrobotics.ballradar.systems.VisionTrackingSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -30,8 +32,6 @@ public class Main extends ApplicationAdapter {
 
 	private FieldGraph fg;
 
-//	private NetworkTablesClient ntClient;
-
 	@Override
 	public void create() {
 		engine = new Engine();
@@ -44,15 +44,15 @@ public class Main extends ApplicationAdapter {
 				cam.getPersCameraInputController()
 		));
 
+		fg = new FieldGraph(cam);
+
 		initEnvironment();
 		initSystems();
 		initEntities();
 
-		fg = new FieldGraph(cam);
 
 		NetworkTablesServer.run();
 
-//		ntClient = new NetworkTablesClient();
 	}
 
 	private void initEnvironment() {
@@ -63,7 +63,9 @@ public class Main extends ApplicationAdapter {
 
 	private void initSystems() {
 		engine.addSystem(new VisionTrackingSystem());
+		engine.addSystem(new SplineSystem(fg));
 		engine.addSystem(new RenderSystem(batch, env));
+//		engine.addSystem(new SplineModelSystem());
 	}
 
 	private void initEntities() {
@@ -85,11 +87,14 @@ public class Main extends ApplicationAdapter {
 
 		fg.update();
 
+
 		batch.begin(cam.getSelectedCamera());
 		engine.update(Gdx.graphics.getDeltaTime());
 		batch.end();
 
+
 		cam.update();
+
 
 		Gdx.gl.glDisable(GL30.GL_BLEND);
 		Gdx.gl.glDisable(GL20.GL_TEXTURE_2D);
