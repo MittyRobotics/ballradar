@@ -12,10 +12,10 @@ public class SplineComponent implements Component {
 
     public SplineComponent(float x, float z) {
         spline = new QuinticHermiteSpline(
-                new Pose2D(0, 0, 0),
+                new Pose2D(0, 0, 90),
                 new Pose2D(x, z, 0),
-                new Vector2D(new Angle(Math.toRadians(270)), 10),
-                new Vector2D(new Angle(x, z), 10)
+                new Vector2D(new Angle(Math.toRadians(270)), 100),
+                new Vector2D(new Angle(x, z), 100)
         );
     }
 
