@@ -4,7 +4,7 @@ import numpy as np
 # height of camera in meters
 cam_height = 0.75
 
-def doMath(xyxy, ballcolor):
+def doMath(xyxy, ballid, ballcolor, conf):
 
     # image resolution
     resolution = (640, 480)
@@ -81,7 +81,7 @@ def doMath(xyxy, ballcolor):
             
 
         # return string with ball data          
-        return str(ground_distance) + "," + str(angle_x) + "," + ballcolor.split(" ")[0] + "," + ballcolor.split(" ")[1] + " "
+        return str(ballid) + "," + str(ground_distance) + "," + str(angle_x) + "," + ballcolor + f",{conf:.2f} "
 
     # ball not detected, return nothing
     return ""
