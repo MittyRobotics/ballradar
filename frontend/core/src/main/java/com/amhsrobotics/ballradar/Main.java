@@ -4,6 +4,7 @@ import com.amhsrobotics.ballradar.field.FieldGraph;
 import com.amhsrobotics.ballradar.field.NetworkTablesServer;
 import com.amhsrobotics.ballradar.managers.CameraManager;
 import com.amhsrobotics.ballradar.managers.EntityFactory;
+import com.amhsrobotics.ballradar.managers.HUDManager;
 import com.amhsrobotics.ballradar.managers.ModelFactory;
 import com.amhsrobotics.ballradar.systems.RenderSystem;
 import com.amhsrobotics.ballradar.systems.SplineSystem;
@@ -28,6 +29,7 @@ public class Main extends ApplicationAdapter {
 	private Environment env;
 
 	private CameraManager cam;
+	private HUDManager hud;
 
 	private FieldGraph fg;
 
@@ -50,6 +52,8 @@ public class Main extends ApplicationAdapter {
 		initEnvironment();
 		initSystems();
 		initEntities();
+
+		hud = new HUDManager();
 
 		NetworkTablesServer.run();
 		ModelFactory.loadAssets();
@@ -89,7 +93,7 @@ public class Main extends ApplicationAdapter {
 		}
 
 		if(loading) {
-			// TODO: loading animation/text
+			hud.drawLoading();
 		}
 
 		fg.update();
