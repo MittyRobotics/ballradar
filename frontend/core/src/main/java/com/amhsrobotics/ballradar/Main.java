@@ -6,7 +6,6 @@ import com.amhsrobotics.ballradar.managers.CameraManager;
 import com.amhsrobotics.ballradar.managers.EntityFactory;
 import com.amhsrobotics.ballradar.managers.ModelFactory;
 import com.amhsrobotics.ballradar.systems.RenderSystem;
-import com.amhsrobotics.ballradar.systems.SplineModelSystem;
 import com.amhsrobotics.ballradar.systems.SplineSystem;
 import com.amhsrobotics.ballradar.systems.VisionTrackingSystem;
 import com.badlogic.ashley.core.Engine;
@@ -32,6 +31,8 @@ public class Main extends ApplicationAdapter {
 
 	private FieldGraph fg;
 
+	private boolean loading = true;
+
 	@Override
 	public void create() {
 		engine = new Engine();
@@ -50,9 +51,8 @@ public class Main extends ApplicationAdapter {
 		initSystems();
 		initEntities();
 
-
 		NetworkTablesServer.run();
-
+		ModelFactory.loadAssets();
 	}
 
 	private void initEnvironment() {
@@ -72,8 +72,6 @@ public class Main extends ApplicationAdapter {
 
 		Vector2 vec = FieldGraph.polarToWorldCoordinates(0, 0);
 		engine.addEntity(EntityFactory.createEntity(ModelFactory.generateBall(ModelFactory.BallType.RED), vec.x, 0, vec.y));
-
-		engine.addEntity(EntityFactory.createRobot());
 	}
 
 	@Override
@@ -85,16 +83,22 @@ public class Main extends ApplicationAdapter {
 		Gdx.gl.glEnable(GL30.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 
-		fg.update();
+		if(loading && ModelFactory.assetManager.update()) {
+			engine.addEntity(EntityFactory.createRobot());
+			loading = false;
+		}
 
+		if(loading) {
+			// TODO: loading animation/text
+		}
+
+		fg.update();
 
 		batch.begin(cam.getSelectedCamera());
 		engine.update(Gdx.graphics.getDeltaTime());
 		batch.end();
 
-
 		cam.update();
-
 
 		Gdx.gl.glDisable(GL30.GL_BLEND);
 		Gdx.gl.glDisable(GL20.GL_TEXTURE_2D);

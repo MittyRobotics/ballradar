@@ -22,7 +22,7 @@ public class EntityFactory {
 
     public static Entity createRobot() {
         Entity entity = new Entity();
-        Model m = ModelFactory.generateRobot();
+        Model m = ModelFactory.loadRobot();
 
         BoundingBox b = new BoundingBox();
         b = m.calculateBoundingBox(b);

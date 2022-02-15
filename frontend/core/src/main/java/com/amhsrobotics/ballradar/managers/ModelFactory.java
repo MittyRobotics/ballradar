@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class ModelFactory {
 
     private static ModelBuilder modelBuilder;
-    private static AssetManager assetManager;
+    public static AssetManager assetManager;
     private static ArrayList<Model> models;
 
     public enum BallType {
@@ -25,10 +25,12 @@ public class ModelFactory {
         modelBuilder = new ModelBuilder();
         assetManager = new AssetManager();
         models = new ArrayList<>();
-
-        assetManager.load("robot.simplified.obj", Model.class);
-        assetManager.finishLoading();
     }
+
+    public static void loadAssets() {
+        assetManager.load("robot.simplified.obj", Model.class);
+    }
+
 
     public static Model generateBall(BallType type) {
 
@@ -46,7 +48,7 @@ public class ModelFactory {
         return m;
     }
 
-    public static Model generateRobot() {
+    public static Model loadRobot() {
         Model m = assetManager.get("robot.simplified.obj", Model.class);
         models.add(m);
 
