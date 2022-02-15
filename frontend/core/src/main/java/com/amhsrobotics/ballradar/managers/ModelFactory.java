@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
 import java.util.ArrayList;
@@ -43,6 +42,21 @@ public class ModelFactory {
                 )),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
         );
+        models.add(m);
+
+        return m;
+    }
+
+    public static Model generateCube() {
+
+        Model m = modelBuilder.createBox(
+                10f, 10f, 10f,
+                new Material(ColorAttribute.createDiffuse(
+                        new Color(182/255f, 182/255f, 242/255f, 1f)
+                )),
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal
+        );
+
         models.add(m);
 
         return m;

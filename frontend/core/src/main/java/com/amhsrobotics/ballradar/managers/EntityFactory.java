@@ -20,6 +20,14 @@ public class EntityFactory {
         return entity;
     }
 
+    public static Entity createPlaceholder() {
+        Entity entity = new Entity();
+
+        entity.add(new ModelComponent(ModelFactory.generateCube(), 0, 0, 0));
+
+        return entity;
+    }
+
     public static Entity createRobot() {
         Entity entity = new Entity();
         Model m = ModelFactory.loadRobot();

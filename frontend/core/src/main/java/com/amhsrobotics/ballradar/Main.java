@@ -10,6 +10,7 @@ import com.amhsrobotics.ballradar.systems.RenderSystem;
 import com.amhsrobotics.ballradar.systems.SplineSystem;
 import com.amhsrobotics.ballradar.systems.VisionTrackingSystem;
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -33,6 +34,7 @@ public class Main extends ApplicationAdapter {
 
 	private FieldGraph fg;
 
+	private Entity loadingEntity;
 	private boolean loading = true;
 
 	@Override
@@ -76,6 +78,9 @@ public class Main extends ApplicationAdapter {
 
 		Vector2 vec = FieldGraph.polarToWorldCoordinates(0, 0);
 		engine.addEntity(EntityFactory.createEntity(ModelFactory.generateBall(ModelFactory.BallType.RED), vec.x, 0, vec.y));
+
+		loadingEntity = EntityFactory.createPlaceholder();
+		engine.addEntity(loadingEntity);
 	}
 
 	@Override
@@ -89,6 +94,8 @@ public class Main extends ApplicationAdapter {
 
 		if(loading && ModelFactory.assetManager.update()) {
 			engine.addEntity(EntityFactory.createRobot());
+			engine.removeEntity(loadingEntity);
+			loadingEntity = null;
 			loading = false;
 		}
 
