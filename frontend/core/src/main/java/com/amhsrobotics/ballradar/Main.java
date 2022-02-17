@@ -76,9 +76,6 @@ public class Main extends ApplicationAdapter {
 
 	private void initEntities() {
 
-		Vector2 vec = FieldGraph.polarToWorldCoordinates(0, 0);
-		engine.addEntity(EntityFactory.createEntity(ModelFactory.generateBall(ModelFactory.BallType.RED), vec.x, 0, vec.y));
-
 		loadingEntity = EntityFactory.createPlaceholder();
 		engine.addEntity(loadingEntity);
 	}

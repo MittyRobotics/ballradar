@@ -3,7 +3,6 @@ package com.amhsrobotics.ballradar.managers;
 import com.amhsrobotics.ballradar.components.BallComponent;
 import com.amhsrobotics.ballradar.components.ModelComponent;
 import com.amhsrobotics.ballradar.components.SplineComponent;
-import com.amhsrobotics.ballradar.components.SplineModelComponent;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Quaternion;
@@ -11,11 +10,11 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class EntityFactory {
 
-    public static Entity createEntity(Model model, float x, float y, float z) {
+    public static Entity createEntity(Model model, int id, float x, float y, float z) {
         Entity entity = new Entity();
 
         entity.add(new ModelComponent(model, x, y, z));
-        entity.add(new BallComponent());
+        entity.add(new BallComponent(id));
 
         return entity;
     }
@@ -46,22 +45,13 @@ public class EntityFactory {
         return entity;
     }
 
-    public static Entity createSpline(float x, float z) {
+    public static Entity createSpline(Entity e, float x, float z) {
         Entity entity = new Entity();
-        SplineComponent sc = new SplineComponent(x, z);
+        SplineComponent sc = new SplineComponent(e, x, z);
 
         entity.add(sc);
 
         return entity;
     }
 
-    public static Entity createSplineModel(Model m) {
-        Entity entity = new Entity();
-        ModelComponent mc = new ModelComponent(m, 0, 0, 0);
-
-        entity.add(mc);
-        entity.add(new SplineModelComponent());
-
-        return entity;
-    }
 }

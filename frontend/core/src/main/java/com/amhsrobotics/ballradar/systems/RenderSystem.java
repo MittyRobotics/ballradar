@@ -2,9 +2,11 @@ package com.amhsrobotics.ballradar.systems;
 
 import com.amhsrobotics.ballradar.components.ModelComponent;
 import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 
@@ -14,6 +16,13 @@ public class RenderSystem extends IteratingSystem {
 
     private ModelBatch batch;
     private Environment environment;
+
+    @Override
+    public void addedToEngine(Engine engine) {
+        Gdx.app.log("RenderSystem", "Initialized");
+
+        super.addedToEngine(engine);
+    }
 
     public RenderSystem(ModelBatch batch, Environment environment) {
         super(Family.all(ModelComponent.class).get());

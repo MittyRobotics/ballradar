@@ -1,5 +1,6 @@
 package com.amhsrobotics.ballradar.field;
 
+import com.badlogic.gdx.Gdx;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class NetworkTablesServer {
@@ -8,7 +9,7 @@ public class NetworkTablesServer {
 
     public static void run() {
         inst.startServer("ballradarpersist", "127.0.0.1", 1735);
-        System.out.println("Started network tables");
+        Gdx.app.log("Network Tables", "Started Server");
 
     }
 
