@@ -29,7 +29,7 @@ import torch
 import torchvision
 import yaml
 
-from utils.downloads import gsutil_getsize
+# from utils.downloads import gsutil_getsize
 from utils.metrics import box_iou, fitness
 
 # Settings
@@ -777,8 +777,8 @@ def print_mutation(results, hyp, save_dir, bucket):
     # Download (optional)
     if bucket:
         url = f'gs://{bucket}/evolve.csv'
-        if gsutil_getsize(url) > (os.path.getsize(evolve_csv) if os.path.exists(evolve_csv) else 0):
-            os.system(f'gsutil cp {url} {save_dir}')  # download evolve.csv if larger than local
+        # if gsutil_getsize(url) > (os.path.getsize(evolve_csv) if os.path.exists(evolve_csv) else 0):
+        #     os.system(f'gsutil cp {url} {save_dir}')  # download evolve.csv if larger than local
 
     # Log to evolve.csv
     s = '' if evolve_csv.exists() else (('%20s,' * n % keys).rstrip(',') + '\n')  # add header

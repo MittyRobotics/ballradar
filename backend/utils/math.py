@@ -2,7 +2,7 @@ import math
 import numpy as np
 
 # height of camera in meters
-cam_height = 0.75
+cam_height = 1.1176
 
 def doMath(xyxy, ballid, ballcolor, conf):
 

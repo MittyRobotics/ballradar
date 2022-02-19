@@ -1,19 +1,19 @@
 package com.amhsrobotics.ballradar.components;
 
-import com.amhsrobotics.ballradar.parametrics.Angle;
-import com.amhsrobotics.ballradar.parametrics.Pose2D;
-import com.amhsrobotics.ballradar.parametrics.QuinticHermiteSpline;
-import com.amhsrobotics.ballradar.parametrics.Vector2D;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
+import com.github.mittyrobotics.pathfollowing.Angle;
+import com.github.mittyrobotics.pathfollowing.Pose2D;
+import com.github.mittyrobotics.pathfollowing.QuinticHermiteSpline;
+import com.github.mittyrobotics.pathfollowing.Vector2D;
 
 public class SplineComponent implements Component {
 
     public QuinticHermiteSpline spline;
-    public Entity e;
+    public Entity parentBall;
 
-    public SplineComponent(Entity e, float x, float z) {
-        this.e = e;
+    public SplineComponent(Entity parentBall, float x, float z) {
+        this.parentBall = parentBall;
 
         spline = new QuinticHermiteSpline(
                 new Pose2D(0, 0, 90),

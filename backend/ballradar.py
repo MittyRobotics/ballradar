@@ -49,7 +49,7 @@ def run():
     v4l2_set.setCameraProps()
 
     # Dataloader
-    view_img = True
+    view_img = False
     cudnn.benchmark = True  # set True to speed up constant image size inference
     dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt)
 

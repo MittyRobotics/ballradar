@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class Main extends ApplicationAdapter {
 
@@ -36,6 +37,8 @@ public class Main extends ApplicationAdapter {
 
 	private Entity loadingEntity;
 	private boolean loading = true;
+
+	public static Vector3 robotPosition;
 
 	@Override
 	public void create() {

@@ -19,4 +19,6 @@ public class PositionComponent implements Component {
         this.y = 0;
         this.z = 0;
     }
+
+
 }

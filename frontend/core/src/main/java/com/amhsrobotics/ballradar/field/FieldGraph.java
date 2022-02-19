@@ -2,13 +2,11 @@ package com.amhsrobotics.ballradar.field;
 
 import com.amhsrobotics.ballradar.managers.CameraManager;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.github.mittyrobotics.pathfollowing.Point2D;
+import com.github.mittyrobotics.pathfollowing.QuinticHermiteSpline;
 
 public class FieldGraph {
 
@@ -31,6 +29,10 @@ public class FieldGraph {
         double y = -(distanceInMeters * Math.cos(angleInRadians) * PIXELS_PER_METER);
 
         return new Vector2((float) x, (float) y);
+    }
+
+    public static float pixelsToMeters(float pixels) {
+        return pixels / PIXELS_PER_METER;
     }
 
     public void beginRenderer() {
@@ -61,13 +63,33 @@ public class FieldGraph {
 
     }
 
-    public void splineSegment(float x1, float z1, float x2, float z2) {
+    public void solidSpline(QuinticHermiteSpline spline) {
+        for(float i = 0; i <= 1.0; i += 0.02) {
+            Point2D v2d = spline.getPoint(i);
+            Point2D v2d2 = spline.getPoint(i+0.02);
+
+
+            drawLine(v2d, v2d2);
+        }
+    }
+
+    private void drawLine(Point2D v2d, Point2D v2d2) {
         renderer.setProjectionMatrix(camera.getSelectedCamera().combined);
         renderer.begin(ShapeRenderer.ShapeType.Line);
 
         Gdx.gl20.glLineWidth(5);
-        renderer.line(new Vector3(x1, 0, z1), new Vector3(x2, 0, z2));
+        renderer.line(new Vector3((float) v2d.x, 0, (float) v2d.y), new Vector3((float) v2d2.x, 0, (float) v2d2.y));
 
         renderer.end();
+    }
+
+    public void dottedSpline(QuinticHermiteSpline spline) {
+        for(float i = 0; i <= 1.0; i += 0.02) {
+            Point2D v2d = spline.getPoint(i);
+            Point2D v2d2 = spline.getPoint(i+0.01);
+
+
+            drawLine(v2d, v2d2);
+        }
     }
 }
