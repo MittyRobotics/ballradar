@@ -2,6 +2,7 @@ from collections import OrderedDict
 import numpy as np
 from scipy.spatial import distance as dist
 
+# (centroid coords), ((bounding box coords), color, confidence))
 class CentroidTracker():
     
     def __init__(self, maxDisappeared=10):

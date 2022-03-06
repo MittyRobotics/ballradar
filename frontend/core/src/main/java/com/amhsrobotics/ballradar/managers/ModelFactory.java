@@ -27,7 +27,7 @@ public class ModelFactory {
     }
 
     public static void loadAssets() {
-        assetManager.load("robot.simplified.obj", Model.class);
+        assetManager.load("robot_fixed.obj", Model.class);
     }
 
 
@@ -63,7 +63,7 @@ public class ModelFactory {
     }
 
     public static Model loadRobot() {
-        Model m = assetManager.get("robot.simplified.obj", Model.class);
+        Model m = assetManager.get("robot_fixed.obj", Model.class);
         models.add(m);
 
         return m;
