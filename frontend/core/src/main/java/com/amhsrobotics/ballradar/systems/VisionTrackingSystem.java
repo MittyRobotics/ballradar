@@ -18,6 +18,9 @@ import com.badlogic.gdx.math.Vector2;
 public class VisionTrackingSystem extends EntitySystem {
 
     private static final double MIN_CONFIDENCE = 0.8;
+    private static String storedData = null;
+    private static int counter = 0;
+    private static final int counterMax = 15;
 
     @Override
     public void addedToEngine(Engine engine) {
@@ -41,8 +44,19 @@ public class VisionTrackingSystem extends EntitySystem {
         }
 
         String data = NetworkTablesServer.getBallData();
-        if(data != null && !data.equals("none")) {
-            String[] balls = data.stripTrailing().split(" ");
+
+        if(data == null || data.equals("none") || data.equals("")) {
+            counter++;
+            if(counter >= counterMax) {
+                storedData = null;
+                counter = 0;
+            }
+        } else {
+            storedData = data;
+        }
+
+        if(storedData != null && !storedData.equals("none")) {
+            String[] balls = storedData.stripTrailing().split(" ");
 
             for(String ball : balls) {
                 String[] props = ball.split(",");
@@ -82,7 +96,6 @@ public class VisionTrackingSystem extends EntitySystem {
 
             }
         }
-
         for(Entity e : entities) {
             BallComponent bc = e.getComponent(BallComponent.class);
             if(!bc.updated) {

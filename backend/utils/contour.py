@@ -15,8 +15,7 @@ upperBounds = [upperBoundBlue, upperBoundRed]
 
 def contourDetection(frame):
 
-    blueballs = []
-    redballs = []
+    rects = []
     	
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
     hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
@@ -39,36 +38,33 @@ def contourDetection(frame):
             center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
             if radius > 15:
-                cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
-                cv2.circle(frame, center, 5, (0, 0, 255), -1)
+                # cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
+                # cv2.circle(frame, center, 5, (0, 0, 255), -1)
 
                 bounding_top_left_x = int(center[0] - radius)
                 bounding_top_left_y = int(center[1] - radius)
                 bounding_bottom_right_x = int(center[0] + radius)
                 bounding_bottom_right_y = int(center[1] + radius)
 
-                if i == 0:
-                    blueballs.append((bounding_top_left_x, bounding_top_left_y, bounding_bottom_right_x, bounding_bottom_right_y))
-                elif i== 1:
-                    redballs.append((bounding_top_left_x, bounding_top_left_y, bounding_bottom_right_x, bounding_bottom_right_y))
+                rects.append(((bounding_top_left_x, bounding_top_left_y, bounding_bottom_right_x, bounding_bottom_right_y), "blueball" if i == 0 else "redball", 1))
     
-    return blueballs, redballs
+    return rects
 
-cap = cv2.VideoCapture(0)
-time.sleep(2.0)
+# cap = cv2.VideoCapture(0)
+# time.sleep(2.0)
 
 
 
-while(cap.isOpened()):
+# while(cap.isOpened()):
     
-    ret, frame = cap.read()
-    b, r = contourDetection(frame);
-    print(b, r)
+#     ret, frame = cap.read()
+#     rects = contourDetection(frame);
+#     print(rects)
     
-    cv2.imshow('frame', frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-    	break
+#     cv2.imshow('frame', frame)
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+#     	break
 
-cap.release()
+# cap.release()
 
-cv2.destroyAllWindows()
+# cv2.destroyAllWindows()

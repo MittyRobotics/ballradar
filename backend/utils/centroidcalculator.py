@@ -27,7 +27,7 @@ class CentroidTracker():
         del self.off_screen_frames[id]
 
     
-    def update(self, bboxes):
+    def update(self, bboxes, fromBulkFunction=False):
         
         if len(bboxes) == 0:
 
@@ -50,7 +50,8 @@ class CentroidTracker():
 
         if len(self.balls) == 0:
             for i in range(0, len(new_centroids)):
-                self.register(new_centroids[i], bb_save[i])
+                if not fromBulkFunction:
+                    self.register(new_centroids[i], bb_save[i])
         else:
             oids = list(self.balls.keys())
             prev_centroids = [i[0] for i in list(self.balls.values())]
@@ -86,6 +87,7 @@ class CentroidTracker():
             
             else:
                 for col in unusedCols:
-                    self.register(new_centroids[col], bb_save[col])
+                    if not fromBulkFunction:
+                        self.register(new_centroids[col], bb_save[col])
 
         return self.balls
