@@ -103,13 +103,18 @@ public class Main extends ApplicationAdapter {
 			hud.drawLoading();
 		}
 
+
 		fg.update();
 
 		batch.begin(cam.getSelectedCamera());
 		engine.update(Gdx.graphics.getDeltaTime());
 		batch.end();
 
+		hud.render();
+
+
 		cam.update();
+
 
 		Gdx.gl.glDisable(GL30.GL_BLEND);
 		Gdx.gl.glDisable(GL20.GL_TEXTURE_2D);

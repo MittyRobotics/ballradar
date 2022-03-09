@@ -56,6 +56,7 @@ public class VisionTrackingSystem extends EntitySystem {
         }
 
         if(storedData != null && !storedData.equals("none")) {
+            System.out.println(storedData);
             String[] balls = storedData.stripTrailing().split(" ");
 
             for(String ball : balls) {

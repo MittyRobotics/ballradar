@@ -91,14 +91,17 @@ def run():
     prev_frame_time = 0
     new_frame_time = 0
 
+    ballString = ""
+    rects = []
+    objects = {}
+
     model.warmup(imgsz=(1, 3, *imgsz), half=half)
     for _, (path, im, im0s, __, ___) in enumerate(dataset):
         frameCount += 1
         # print("frame: ", frameCount)
 
-        rects = []
         fromBulkFunction = False
-        objects = {}
+        
         ntclient.clear()
 
         if not ntclient.check_connected():
@@ -109,6 +112,9 @@ def run():
 
         if frameCount % frameSkip == 0:
             frameCount = 0
+            ballString = ""
+            rects = []
+            objects = {}
             rects = yolo(path, im, im0s, device, names, model, dataset)
             objects = ct.update(rects, fromBulkFunction)
         else:
@@ -124,22 +130,21 @@ def run():
 
             fromBulkFunction = True
 
-        ballString = ""
         # objects = ct.update(rects, fromBulkFunction)
 
-        for (oid, centroid) in objects.items():
+        for i, (oid, centroid) in enumerate(objects.items()):
             xyxy = centroid[1][0]
             color = centroid[1][1]
             conf = centroid[1][2]
 
-            label = f'ID: {oid}, {color}, {conf:.2f}' if not fromBulkFunction else f'ID: {oid}, {color}, -1.00'
+            label = f'ID: {oid}, {color}, {conf:.2f}' if not fromBulkFunction else f'ID: {oid}, {color}'
             cv2.rectangle(im0s[0], (xyxy[0], xyxy[1]), (xyxy[2], xyxy[3]), (0, 255, 0), 2)
             cv2.putText(im0s[0], label, (xyxy[0], xyxy[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-            # annotator.box_label(xyxy, label)
 
             ballString += doMath(xyxy, oid, color, conf)
+        
 
-            ntclient.add_ball(ballString)
+        ntclient.add_ball(ballString)
 
         new_frame_time = time.time()
         fps = 1/(new_frame_time-prev_frame_time)

@@ -6,6 +6,7 @@ import com.amhsrobotics.ballradar.components.ModelComponent;
 import com.amhsrobotics.ballradar.components.SplineComponent;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
@@ -35,13 +36,13 @@ public class EntityFactory {
         BoundingBox b = new BoundingBox();
         b = m.calculateBoundingBox(b);
 
-        Main.robotPosition = new Vector3(0, 0, b.getDepth() / 2);
+        Main.robotPosition = new Vector3(-b.getWidth() / 2, 0, -b.getDepth() / 2);
 
-        ModelComponent mc = new ModelComponent(m, 0, 0, b.getDepth() / 2);
-//        Quaternion q = new Quaternion();
-//        q.setEulerAngles(270, 270, 0);
-//        mc.instance.transform.rotate(q);
-        mc.instance.transform.scale(1.26f, 1.26f, 1.26f);
+        ModelComponent mc = new ModelComponent(m, -b.getWidth() / 2 + 15, 0, b.getDepth() / 2 - 30);
+        Quaternion q = new Quaternion();
+        q.setEulerAngles(270, 0, 0);
+        mc.instance.transform.rotate(q);
+//        mc.instance.transform.scale(1.26f, 1.26f, 1.26f);
 
         entity.add(mc);
 

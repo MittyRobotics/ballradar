@@ -5,7 +5,7 @@ from scipy.spatial import distance as dist
 # (centroid coords), ((bounding box coords), color, confidence))
 class CentroidTracker():
     
-    def __init__(self, maxDisappeared=10):
+    def __init__(self, maxDisappeared=15):
 
         self.uniqueID = 0
         self.balls = OrderedDict()

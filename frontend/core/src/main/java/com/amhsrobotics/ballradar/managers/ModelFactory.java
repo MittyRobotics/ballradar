@@ -27,7 +27,7 @@ public class ModelFactory {
     }
 
     public static void loadAssets() {
-        assetManager.load("robot_fixed.obj", Model.class);
+        assetManager.load("robot.g3db", Model.class);
     }
 
 
@@ -63,7 +63,7 @@ public class ModelFactory {
     }
 
     public static Model loadRobot() {
-        Model m = assetManager.get("robot_fixed.obj", Model.class);
+        Model m = assetManager.get("robot.g3db", Model.class);
         models.add(m);
 
         return m;
