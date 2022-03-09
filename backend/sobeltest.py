@@ -45,9 +45,9 @@ while(cap.isOpened()):
     ret, frame = cap.read()
     
     sobel = sobelEdge(frame)
-    circles = circleDetection(sobel, frame)
+    # circles = circleDetection(sobel, frame)
     # cv2.imshow("Hough", circles)
-    cv2.imshow("Sobel + Hough", circles)
+    cv2.imshow("Sobel + Hough", sobel)
     
     if cv2.waitKey(1) & 0xFF == ord('q'):
     	break

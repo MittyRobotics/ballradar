@@ -75,7 +75,7 @@ def run():
     imgsz=[320, 320]  # inference size (height, width)
 
     device = select_device(device)
-    model = DetectMultiBackend('runs/train/exp/weights/best.pt', device=device, dnn=dnn, data=data)
+    model = DetectMultiBackend('runs/train/exp/weights/ball.pt', device=device, dnn=dnn, data=data)
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)
 

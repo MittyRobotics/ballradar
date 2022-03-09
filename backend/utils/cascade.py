@@ -1,7 +1,7 @@
 import cv2
 import math
 
-ball_cascade = cv2.CascadeClassifier('runs/train/exp/weights/cascade.xml')
+ball_cascade = cv2.CascadeClassifier('runs/train/exp/weights/ball_cascade.xml')
 
 # cap = cv2.VideoCapture(0)
 
