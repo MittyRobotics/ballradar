@@ -2,9 +2,12 @@ package com.amhsrobotics.ballradar.managers;
 
 import com.amhsrobotics.ballradar.Main;
 import com.amhsrobotics.ballradar.components.BallComponent;
+import com.amhsrobotics.ballradar.components.BallIndicatorComponent;
 import com.amhsrobotics.ballradar.components.ModelComponent;
 import com.amhsrobotics.ballradar.components.SplineComponent;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -12,11 +15,19 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class EntityFactory {
 
-    public static Entity createEntity(Model model, int id, float x, float y, float z) {
+    public static Entity create3DEntity(Model model, int id, float x, float y, float z) {
         Entity entity = new Entity();
 
         entity.add(new ModelComponent(model, x, y, z));
         entity.add(new BallComponent(id));
+
+        return entity;
+    }
+
+    public static Entity create2DEntity(String texturePath, int x, int y) {
+        Entity entity = new Entity();
+
+        entity.add(new BallIndicatorComponent(new Texture(Gdx.files.internal(texturePath)), x, y));
 
         return entity;
     }

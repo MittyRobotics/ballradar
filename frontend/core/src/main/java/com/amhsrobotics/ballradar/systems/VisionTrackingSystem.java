@@ -86,7 +86,7 @@ public class VisionTrackingSystem extends EntitySystem {
 
                 if(!idFound) {
                     Vector2 vec = FieldGraph.polarToWorldCoordinates(angleDeg, distanceMeters);
-                    Entity newEntity = EntityFactory.createEntity(
+                    Entity newEntity = EntityFactory.create3DEntity(
                                     ModelFactory.generateBall(color.equals("blueball") ? ModelFactory.BallType.BLUE : ModelFactory.BallType.RED), ballId, vec.x, 4.75f, vec.y
                     );
                     Main.engine.addEntity(newEntity);
@@ -94,7 +94,6 @@ public class VisionTrackingSystem extends EntitySystem {
                             EntityFactory.createSpline(newEntity, vec.x, vec.y)
                     );
                 }
-
             }
         }
         for(Entity e : entities) {

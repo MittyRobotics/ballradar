@@ -6,6 +6,7 @@ import com.amhsrobotics.ballradar.managers.CameraManager;
 import com.amhsrobotics.ballradar.managers.EntityFactory;
 import com.amhsrobotics.ballradar.managers.HUDManager;
 import com.amhsrobotics.ballradar.managers.ModelFactory;
+import com.amhsrobotics.ballradar.systems.BallIndicatorSystem;
 import com.amhsrobotics.ballradar.systems.RenderSystem;
 import com.amhsrobotics.ballradar.systems.SplineSystem;
 import com.amhsrobotics.ballradar.systems.VisionTrackingSystem;
@@ -72,9 +73,9 @@ public class Main extends ApplicationAdapter {
 
 	private void initSystems() {
 		engine.addSystem(new VisionTrackingSystem());
+		engine.addSystem(new BallIndicatorSystem());
 		engine.addSystem(new SplineSystem(fg));
 		engine.addSystem(new RenderSystem(batch, env));
-//		engine.addSystem(new SplineModelSystem());
 	}
 
 	private void initEntities() {

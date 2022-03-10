@@ -43,7 +43,7 @@ public class CameraManager {
         persCam.position.set(0, 80f, 0f);
         persCam.lookAt(0, 0, 0);
         persCam.near = 1f;
-        persCam.far = 800f;
+        persCam.far = 1500f;
         persCam.update();
 
         topCam = new OrthographicCamera();
@@ -51,16 +51,16 @@ public class CameraManager {
         topCam.position.set(0, 80f, 0);
         topCam.lookAt(0, 0, 0);
         topCam.update();
-        topCam.zoom = 3;
+        topCam.zoom = 8;
 
 
         topPosition = new Vector3(persCam.position);
         topAngle = new Vector3(persCam.direction);
         topAngleUp = new Vector3(persCam.up);
 
-        assistPosition = new Vector3(0, 80, persCam.position.z + 40);
-        assistAngle = new Vector3(persCam.direction.x, persCam.direction.y, persCam.direction.z - 1);
-        assistAngleUp = new Vector3(persCam.up.x, persCam.up.y , persCam.up.z -+ 1);
+        assistPosition = new Vector3(0, 250, persCam.position.z + 100);
+        assistAngle = new Vector3(persCam.direction.x, persCam.direction.y, persCam.direction.z - 0.75f);
+        assistAngleUp = new Vector3(persCam.up.x, persCam.up.y , persCam.up.z - 0.75f);
 
         center = new Vector3(0, 80f, 0);
 
@@ -88,14 +88,14 @@ public class CameraManager {
 
         if(interpolating != CameraMovement.NONE) {
             if(interpolating == CameraMovement.ASSIST) {
-                if(persCam.direction.dst(assistAngle) < 0.1) {
+                if(persCam.position.dst(assistPosition) < 0.5) {
                     interpolating = CameraMovement.ELASTIC_ASSIST;
                 }
                 persCam.position.interpolate(assistPosition, INTERP_CONSTANT, Interpolation.sine);
                 persCam.direction.interpolate(assistAngle, INTERP_CONSTANT, Interpolation.sine);
                 persCam.up.interpolate(assistAngleUp, INTERP_CONSTANT, Interpolation.sine);
             } else if(interpolating == CameraMovement.TOPDOWN) {
-                if(persCam.direction.dst(topAngle) < 0.1) {
+                if(persCam.position.dst(topPosition) < 0.5) {
                     selectedCamera = topCam;
                     interpolating = CameraMovement.ELASTIC_TOPDOWN;
                 }

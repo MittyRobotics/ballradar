@@ -3,7 +3,9 @@ package com.amhsrobotics.ballradar.managers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -14,12 +16,27 @@ public class HUDManager {
     private SpriteBatch batch;
     private BitmapFont font;
 
+    private Sprite blue_ball, red_ball;
+
     public HUDManager() {
         hudcam = new OrthographicCamera();
         hudcam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         batch = new SpriteBatch();
         renderer = new ShapeRenderer();
+
+        blue_ball = new Sprite(new Texture(Gdx.files.internal("blueball.png")));
+        red_ball = new Sprite(new Texture(Gdx.files.internal("redball.png")));
+
+        blue_ball.setOriginCenter();
+        red_ball.setOriginCenter();
+        red_ball.setAlpha(0.5f);
+
+        blue_ball.setSize(40, 40);
+        red_ball.setSize(40, 40);
+
+        blue_ball.setPosition(50, Gdx.graphics.getHeight() - 45);
+        red_ball.setPosition(100, Gdx.graphics.getHeight() - 45);
 
         font = new BitmapFont(false);
     }
@@ -36,10 +53,19 @@ public class HUDManager {
     }
 
     public void render() {
+        renderer.setProjectionMatrix(hudcam.combined);
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(new Color(51/255f, 51/255f, 51/255f, 1f));
 
         renderer.rect(0, Gdx.graphics.getHeight() - 50, Gdx.graphics.getWidth(), 50);
         renderer.end();
+
+        batch.setProjectionMatrix(hudcam.combined);
+        batch.begin();
+
+        red_ball.draw(batch);
+        blue_ball.draw(batch);
+
+        batch.end();
     }
 }
