@@ -4,7 +4,6 @@ import com.amhsrobotics.ballradar.Main;
 import com.amhsrobotics.ballradar.components.BallComponent;
 import com.amhsrobotics.ballradar.components.BallIndicatorComponent;
 import com.amhsrobotics.ballradar.components.ModelComponent;
-import com.amhsrobotics.ballradar.managers.EntityFactory;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;

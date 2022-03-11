@@ -126,7 +126,7 @@ def run():
             #         continue
             #     rects.extend(cascadeDetection(cropped_img, croppedInfo=rect[0]))
 
-            # rects = cascadeDetection(im0s[0])
+            # rects = contourDetection(im0s[0])
 
             fromBulkFunction = True
 
