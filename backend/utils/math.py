@@ -1,8 +1,11 @@
 import math
 import numpy as np
 
+# back cameras: 31.5 in
+# front cameras: 36 in
+
 # height of camera in meters
-cam_height = 1.1176
+cam_height = 0.8
 
 def doMath(xyxy, ballid, ballcolor, conf):
 

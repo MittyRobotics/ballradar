@@ -18,11 +18,13 @@ from utils.datasets import LoadStreams
 from utils.general import (check_img_size, non_max_suppression, scale_coords)
 from utils.torch_utils import select_device
 from utils.math import doMath
-from utils import ntclient
+# from utils import ntclient
 from utils.centroidcalculator import CentroidTracker
 from utils.contour import contourDetection
 from utils.cascade import cascadeDetection
+from utils.augmentations import letterbox
 import utils.v4l2_set as v4l2_set
+import numpy as np
 
         
 data=ROOT / 'data/coco128.yaml'
@@ -63,7 +65,7 @@ def yolo(path, im, im0s, device, names, model, dataset):
             det[:, :4] = scale_coords(im.shape[2:], det[:, :4], im0.shape).round()
 
             for *xyxy, conf, cls in reversed(det):
-                rects.append(((int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])), names[int(cls)], conf))
+                rects.append(((int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])), names[int(cls)], conf, i))
 
     return rects
 
@@ -79,33 +81,39 @@ def run():
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)
 
-    v4l2_set.setCameraProps()
+    # v4l2_set.setCameraProps()
 
     # Dataloader
     cudnn.benchmark = True  # set True to speed up constant image size inference
-    dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt)
+    dataset = LoadStreams("streams.txt", img_size=imgsz, stride=stride, auto=pt)
 
     frameSkip = 10
     frameCount = 0
-
-    prev_frame_time = 0
-    new_frame_time = 0
 
     ballString = ""
     rects = []
     objects = {}
 
     model.warmup(imgsz=(1, 3, *imgsz), half=half)
-    for _, (path, im, im0s, __, ___) in enumerate(dataset):
+    for i, (path, im, im0s, vid_cap, s) in enumerate(dataset):
+
+        first_img = cv2.resize(im0s[0], (320, 240), interpolation=cv2.INTER_LINEAR)
+        second_img = cv2.resize(im0s[1], (320, 240), interpolation=cv2.INTER_LINEAR)
+
+        concat = cv2.vconcat([first_img, second_img])
+
+
+        # cv2.imshow("concat", concat)
+
         frameCount += 1
         # print("frame: ", frameCount)
 
         fromBulkFunction = False
         
-        ntclient.clear()
+        # ntclient.clear()
 
-        if not ntclient.check_connected():
-            ntclient.table = ntclient.waitForConnection()
+        # if not ntclient.check_connected():
+            # ntclient.table = ntclient.waitForConnection()
 
         # OPTIONS:
         # CASCADE DETECTION, CONTOUR DETECTION
@@ -136,27 +144,20 @@ def run():
             xyxy = centroid[1][0]
             color = centroid[1][1]
             conf = centroid[1][2]
+            cam = centroid[1][3]
 
             label = f'ID: {oid}, {color}, {conf:.2f}' if not fromBulkFunction else f'ID: {oid}, {color}'
-            cv2.rectangle(im0s[0], (xyxy[0], xyxy[1]), (xyxy[2], xyxy[3]), (0, 255, 0), 2)
-            cv2.putText(im0s[0], label, (xyxy[0], xyxy[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            cv2.rectangle(im0s[cam], (xyxy[0], xyxy[1]), (xyxy[2], xyxy[3]), (0, 255, 0), 2)
+            cv2.putText(im0s[cam], label, (xyxy[0], xyxy[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             ballString += doMath(xyxy, oid, color, conf)
         
 
-        ntclient.add_ball(ballString)
-
-        new_frame_time = time.time()
-        fps = 1/(new_frame_time-prev_frame_time)
-        prev_frame_time = new_frame_time
-        fps = str(int(fps))
-
-        # display fps on cv2 window
-        cv2.putText(im0s[0], fps, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+        # ntclient.add_ball(ballString)
 
         cv2.imshow("ball radar", im0s[0])
-
-        # print(rects)
+        cv2.imshow("ball radar 2", im0s[1])
+        print(rects)
         
 
 

@@ -3,9 +3,11 @@ import numpy as np
 from scipy.spatial import distance as dist
 
 # (centroid coords), ((bounding box coords), color, confidence))
+
+
 class CentroidTracker():
-    
-    def __init__(self, maxDisappeared=15):
+
+    def __init__(self, maxDisappeared=40):
 
         self.uniqueID = 0
         self.balls = OrderedDict()
@@ -13,22 +15,19 @@ class CentroidTracker():
 
         self.maxDisappearedFrames = maxDisappeared
 
-
     def register(self, centroid, bbox):
-        
+
         self.balls[self.uniqueID] = (centroid, bbox)
         self.off_screen_frames[self.uniqueID] = 0
         self.uniqueID += 1
 
-    
     def remove(self, id):
 
         del self.balls[id]
         del self.off_screen_frames[id]
 
-    
     def update(self, bboxes, fromBulkFunction=False):
-        
+
         if len(bboxes) == 0:
 
             for oid in list(self.off_screen_frames.keys()):
@@ -42,11 +41,11 @@ class CentroidTracker():
         new_centroids = np.zeros((len(bboxes), 2), dtype="int")
         bb_save = {}
 
-        for i, ((x1, y1, x2, y2), color, conf) in enumerate(bboxes):
+        for i, ((x1, y1, x2, y2), color, conf, cam) in enumerate(bboxes):
             cx = int((x1 + x2) / 2.0)
             cy = int((y1 + y2) / 2.0)
             new_centroids[i] = (cx, cy)
-            bb_save[i] = ((x1, y1, x2, y2), color, conf)
+            bb_save[i] = ((x1, y1, x2, y2), color, conf, cam)
 
         if len(self.balls) == 0:
             for i in range(0, len(new_centroids)):
@@ -84,7 +83,7 @@ class CentroidTracker():
 
                     if self.off_screen_frames[oid] > self.maxDisappearedFrames:
                         self.remove(oid)
-            
+
             else:
                 for col in unusedCols:
                     if not fromBulkFunction:
