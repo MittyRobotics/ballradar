@@ -36,5 +36,8 @@ def check_connected():
 def add_ball(string):
     table.putString('balldata', string)
 
+def set_vision_connected(value):
+    table.putBoolean('visionconnected', value)
+
 def clear():
     table.delete('balldata')

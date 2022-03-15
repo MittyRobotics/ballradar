@@ -18,11 +18,8 @@ from utils.datasets import LoadStreams
 from utils.general import (check_img_size, non_max_suppression, scale_coords)
 from utils.torch_utils import select_device
 from utils.math import doMath
-# from utils import ntclient
+from utils import ntclient
 from utils.centroidcalculator import CentroidTracker
-from utils.contour import contourDetection
-from utils.cascade import cascadeDetection
-from utils.augmentations import letterbox
 import utils.v4l2_set as v4l2_set
 import numpy as np
 
@@ -72,6 +69,8 @@ def yolo(path, im, im0s, device, names, model, dataset):
 @torch.no_grad()
 def run():
 
+    ntclient.set_vision_connected(False)
+
     # Load model
     device = ''  # cuda device, i.e. 0 or 0,1,2,3 or cpu
     imgsz=[320, 320]  # inference size (height, width)
@@ -94,29 +93,26 @@ def run():
     rects = []
     objects = {}
 
+
     model.warmup(imgsz=(1, 3, *imgsz), half=half)
     for i, (path, im, im0s, vid_cap, s) in enumerate(dataset):
 
-        first_img = cv2.resize(im0s[0], (320, 240), interpolation=cv2.INTER_LINEAR)
-        second_img = cv2.resize(im0s[1], (320, 240), interpolation=cv2.INTER_LINEAR)
+        ntclient.set_vision_connected(True)
 
-        concat = cv2.vconcat([first_img, second_img])
+        # first_img = cv2.resize(im0s[0], (320, 240), interpolation=cv2.INTER_LINEAR)
+        # second_img = cv2.resize(im0s[1], (320, 240), interpolation=cv2.INTER_LINEAR)
 
+        # concat = cv2.vconcat([first_img, second_img])
 
         # cv2.imshow("concat", concat)
 
+
         frameCount += 1
-        # print("frame: ", frameCount)
-
-        fromBulkFunction = False
         
-        # ntclient.clear()
+        ntclient.clear()
 
-        # if not ntclient.check_connected():
-            # ntclient.table = ntclient.waitForConnection()
-
-        # OPTIONS:
-        # CASCADE DETECTION, CONTOUR DETECTION
+        if not ntclient.check_connected():
+            ntclient.table = ntclient.waitForConnection()
 
         if frameCount % frameSkip == 0:
             frameCount = 0
@@ -124,21 +120,9 @@ def run():
             rects = []
             objects = {}
             rects = yolo(path, im, im0s, device, names, model, dataset)
-            objects = ct.update(rects, fromBulkFunction)
-        else:
-            # rectsTemp = contourDetection(im0s[0])
-            # for rect in rectsTemp:
-            #     (top_left_x, top_left_y, btm_right_x, btm_right_y) = rect[0]
-            #     cropped_img = im0s[0][top_left_y - 20:btm_right_y + 20, top_left_x - 20:btm_right_x + 20]
-            #     if 0 in cropped_img.shape:
-            #         continue
-            #     rects.extend(cascadeDetection(cropped_img, croppedInfo=rect[0]))
+            objects = ct.update(rects)
 
-            # rects = contourDetection(im0s[0])
 
-            fromBulkFunction = True
-
-        # objects = ct.update(rects, fromBulkFunction)
 
         for i, (oid, centroid) in enumerate(objects.items()):
             xyxy = centroid[1][0]
@@ -146,18 +130,17 @@ def run():
             conf = centroid[1][2]
             cam = centroid[1][3]
 
-            label = f'ID: {oid}, {color}, {conf:.2f}' if not fromBulkFunction else f'ID: {oid}, {color}'
+            label = f'ID: {oid}, {color}, {conf:.2f}'
             cv2.rectangle(im0s[cam], (xyxy[0], xyxy[1]), (xyxy[2], xyxy[3]), (0, 255, 0), 2)
             cv2.putText(im0s[cam], label, (xyxy[0], xyxy[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            ballString += doMath(xyxy, oid, color, conf, cam)
 
-            ballString += doMath(xyxy, oid, color, conf)
-        
-
-        # ntclient.add_ball(ballString)
+        # print(ballString)
+        ntclient.add_ball(ballString)
 
         cv2.imshow("ball radar", im0s[0])
         cv2.imshow("ball radar 2", im0s[1])
-        print(rects)
+        # print(rects)
         
 
 

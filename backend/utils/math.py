@@ -5,9 +5,11 @@ import numpy as np
 # front cameras: 36 in
 
 # height of camera in meters
-cam_height = 0.8
 
-def doMath(xyxy, ballid, ballcolor, conf):
+# ejector-side, shooter-side
+cam_heights = [0.8, 0.9144]
+
+def doMath(xyxy, ballid, ballcolor, conf, cam):
 
     # image resolution
     resolution = (640, 480)
@@ -77,14 +79,15 @@ def doMath(xyxy, ballid, ballcolor, conf):
         ground_distance = 0
 
         # calculate ground distance using pythagorean theorem
-        if(distance**2 - cam_height**2 >= 0):
-            ground_distance = math.sqrt(distance**2 - cam_height**2)
+        if(distance**2 - cam_heights[cam]**2 >= 0):
+            ground_distance = math.sqrt(distance**2 - cam_heights[cam]**2)
         else:
             ground_distance = distance
             
-
+        
         # return string with ball data          
-        return str(ballid) + "," + str(ground_distance) + "," + str(angle_x) + "," + ballcolor + f",{conf:.2f} "
-
+        dat = str(ballid) + "," + str(ground_distance) + "," + str(angle_x) + "," + ballcolor + f",{conf:.2f}," + str(cam) + " "
+        # print(dat)
+        return dat
     # ball not detected, return nothing
     return ""
