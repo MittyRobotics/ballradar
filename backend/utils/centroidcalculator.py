@@ -26,6 +26,9 @@ class CentroidTracker():
         del self.balls[id]
         del self.off_screen_frames[id]
 
+    def get_data(self):
+        return self.balls
+
     def update(self, bboxes, fromBulkFunction=False):
 
         if len(bboxes) == 0:
