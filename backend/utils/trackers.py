@@ -7,9 +7,10 @@ from scipy.spatial import distance as dist
 
 class CentroidTracker():
 
-    def __init__(self, maxDisappeared=40):
+    def __init__(self, maxDisappeared=40, idStartingPoint=0):
 
-        self.uniqueID = 0
+        self.uniqueID = idStartingPoint
+        
         self.balls = OrderedDict()
         self.off_screen_frames = OrderedDict()
 

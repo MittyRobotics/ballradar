@@ -40,7 +40,7 @@ f = 10         #Camera lense's focal length [mm]
 alpha = 52        #Camera field of view in the horisontal plane [degrees]
 
 
-trackers = [CentroidTracker(), CentroidTracker]
+trackers = [CentroidTracker(), CentroidTracker(idStartingPoint=500)]
 stereoTracker = StereoTracker()
 
 with open("streams.txt") as f:
@@ -152,9 +152,6 @@ def run():
                     split_raw_rects[cam_id] = []
 
                 split_raw_rects[cam_id].append(rect)
-
-            # pair elements of keys in dictionary together
-            # cam_pairs = list(zip(split_raw_rects[0], split_raw_rects[1]))
 
             for key in split_raw_rects.keys():
                 trackers[key].update(split_raw_rects[key])

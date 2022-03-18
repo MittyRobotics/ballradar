@@ -42,7 +42,10 @@ with open("streams.txt") as f:
                for x in f.read().strip().splitlines() if len(x.strip())]
 
 for i in range(len(sources)):
-    trackers.append(CentroidTracker())
+    if i > 0:
+        trackers.append(CentroidTracker(idStartingPoint=500*i))
+    else:
+        trackers.append(CentroidTracker())
 
 
 def yolo(path, im, im0s, device, names, model, dataset):
