@@ -1,5 +1,5 @@
 import utils.v4l2_set as v4l2_set
-from utils.centroidcalculator import CentroidTracker
+from utils.trackers import CentroidTracker
 from utils import ntclient
 from utils.math import doMath
 from utils.torch_utils import select_device
@@ -100,7 +100,7 @@ def run():
 
     ballString = ""
 
-    model.warmup(imgsz=(1, 3, *imgsz), half=half)
+    model.warmup(imgsz=(1, 3, *imgsz))
     for i, (path, im, im0s, vid_cap, s) in enumerate(dataset):
 
         ntclient.set_vision_connected(True)

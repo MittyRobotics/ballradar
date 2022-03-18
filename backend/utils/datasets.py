@@ -30,6 +30,8 @@ from utils.augmentations import Albumentations, augment_hsv, copy_paste, letterb
 from utils.general import (LOGGER, NUM_THREADS, check_dataset, check_requirements, check_yaml, clean_str,
                            segments2boxes, xyn2xy, xywh2xyxy, xywhn2xyxy, xyxy2xywhn)
 from utils.torch_utils import torch_distributed_zero_first
+from utils.calibration import undistortRectify
+
 
 # Parameters
 HELP_URL = 'https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data'
@@ -282,10 +284,11 @@ class LoadWebcam:  # for inference
 
 class LoadStreams:
     # YOLOv5 streamloader, i.e. `python detect.py --source 'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP streams`
-    def __init__(self, sources='streams.txt', img_size=640, stride=32, auto=True):
+    def __init__(self, sources='streams.txt', img_size=640, stride=32, auto=True, stereo=False):
         self.mode = 'stream'
         self.img_size = img_size
         self.stride = stride
+        self.stereo = stereo
 
         if os.path.isfile(sources):
             with open(sources) as f:
@@ -355,6 +358,8 @@ class LoadStreams:
 
         # Letterbox
         img0 = self.imgs.copy()
+        if self.stereo == True:
+            img0[0], img0[1] = undistortRectify(img0[0], img0[1])
         img = [letterbox(x, self.img_size, stride=self.stride, auto=self.rect and self.auto)[0] for x in img0]
 
         # Stack
