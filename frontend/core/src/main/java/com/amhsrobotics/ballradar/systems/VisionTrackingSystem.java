@@ -68,6 +68,7 @@ public class VisionTrackingSystem extends EntitySystem {
 
                 int ballId = Integer.parseInt(props[0]);
                 double confidence = Double.parseDouble(props[4]);
+                int cam = Integer.parseInt(props[5]);
                 String color = props[3];
                 float distanceMeters = Float.parseFloat(props[1]);
                 float angleDeg = Float.parseFloat(props[2]);
@@ -78,6 +79,10 @@ public class VisionTrackingSystem extends EntitySystem {
                     if(c.id == ballId) {
                         ModelComponent mc = e.getComponent(ModelComponent.class);
                         Vector2 vec = FieldGraph.polarToWorldCoordinates(angleDeg, distanceMeters);
+                        if(cam == 0) {
+                            vec.x = -vec.x;
+                            vec.y = -vec.y;
+                        }
                         mc.setPosition(vec.x, 4.75f, vec.y);
                         c.updated = true;
                         idFound = true;
@@ -86,13 +91,17 @@ public class VisionTrackingSystem extends EntitySystem {
 
                 if(!idFound) {
                     Vector2 vec = FieldGraph.polarToWorldCoordinates(angleDeg, distanceMeters);
+                    if(cam == 0) {
+                        vec.x = -vec.x;
+                        vec.y = -vec.y;
+                    }
                     Entity newEntity = EntityFactory.create3DEntity(
                                     ModelFactory.generateBall(color.equals("blueball") ? ModelFactory.BallType.BLUE : ModelFactory.BallType.RED), ballId, vec.x, 4.75f, vec.y
                     );
                     Main.engine.addEntity(newEntity);
-                    Main.engine.addEntity(
-                            EntityFactory.createSpline(newEntity, vec.x, vec.y)
-                    );
+
+                    Main.engine.addEntity(EntityFactory.createSpline(newEntity, vec.x, vec.y, cam == 0));
+
                 }
             }
         }

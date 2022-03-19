@@ -39,6 +39,7 @@ public class Main extends ApplicationAdapter {
 	private boolean loading = true;
 
 	public static Vector3 robotPosition;
+	public static Vector3 robotDimensions;
 
 	@Override
 	public void create() {

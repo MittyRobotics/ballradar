@@ -41,9 +41,9 @@ DEVICE_COUNT = max(torch.cuda.device_count(), 1)
 
 with open("high_fov_camera_calibration.txt") as f:
     lines = f.readlines()
-    mtx = eval(lines[0].split(":")[1].strip())
-    dist = eval(lines[1].split(":")[1].strip())
-    newcameramtx = eval(lines[2].split(":")[1].strip())
+    mtx = np.array(eval(lines[0].split(":")[1].strip()))
+    dist = np.array(eval(lines[1].split(":")[1].strip()))
+    newcameramtx = np.array(eval(lines[2].split(":")[1].strip()))
     roi = eval(lines[3].split(":")[1].strip())
 
 
@@ -373,6 +373,7 @@ class LoadStreams:
             dst = cv2.undistort(img0[0], mtx, dist, None, newcameramtx)
             x,y,w,h = roi
             img0[0] = dst[y:y+h, x:x+w]
+            img0[0] = cv2.resize(img0[0], (640, 480), cv2.INTER_AREA)
 
 
         img = [letterbox(x, self.img_size, stride=self.stride, auto=self.rect and self.auto)[0] for x in img0]

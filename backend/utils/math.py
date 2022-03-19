@@ -7,10 +7,12 @@ import numpy as np
 # height of camera in meters
 
 # ejector-side, shooter-side (meters)
-cam_heights = [0.8, 0.9144]
-stereo_height = 0.9144
+cam_heights = [0.9144, 0.8]
+cam_angles = [23, 23]
 
 # horizontal & vertical fields of view
+hfovs = [72, 52]
+vfovs = [76, 39]
 hfov = 52
 vfov = 39
 
@@ -68,8 +70,8 @@ def doMath(xyxy, ballid, ballcolor, conf, cam):
     center_pixel = ((bounding_top_left_x + bounding_btm_right_x) / 2, (bounding_top_left_y + bounding_btm_right_y) / 2)
 
     # angle to center pixel in X and Y directions
-    angle_x = (center_pixel[0] / resolution[0]) * hfov
-    angle_y = (center_pixel[1] / resolution[1]) * vfov
+    angle_x = (center_pixel[0] / resolution[0]) * hfovs[cam]
+    angle_y = (center_pixel[1] / resolution[1]) * vfovs[cam]
     
     # error checking (if bounding box is 0, dividng by 0)
     if bounding_width > 0 and bounding_height > 0 and np.sin(angle_x * np.pi/180) != 0 and np.sin(angle_y * np.pi/180) != 0:
@@ -114,6 +116,7 @@ def doMath(xyxy, ballid, ballcolor, conf, cam):
 
         # calculate ground distance using pythagorean theorem
         if(distance**2 - cam_heights[cam]**2 >= 0):
+            # ground_distance = distance * np.sin(math.radians(cam_angles[cam]))
             ground_distance = math.sqrt(distance**2 - cam_heights[cam]**2)
         else:
             ground_distance = distance

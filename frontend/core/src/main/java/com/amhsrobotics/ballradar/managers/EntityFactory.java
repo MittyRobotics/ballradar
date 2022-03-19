@@ -55,14 +55,15 @@ public class EntityFactory {
         mc.instance.transform.rotate(q);
 //        mc.instance.transform.scale(1.26f, 1.26f, 1.26f);
 
+        Main.robotDimensions = new Vector3(b.getWidth(), b.getHeight(), b.getDepth());
         entity.add(mc);
 
         return entity;
     }
 
-    public static Entity createSpline(Entity e, float x, float z) {
+    public static Entity createSpline(Entity e, float x, float z, boolean negative) {
         Entity entity = new Entity();
-        SplineComponent sc = new SplineComponent(e, x, z);
+        SplineComponent sc = new SplineComponent(e, x, z, negative);
 
         entity.add(sc);
 
