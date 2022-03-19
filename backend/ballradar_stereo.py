@@ -1,7 +1,7 @@
 import utils.v4l2_set as v4l2_set
 from utils.trackers import CentroidTracker, StereoTracker
-#from utils import ntclient
-from utils.math import doMath
+from utils import ntclient
+from utils.math import doMath, angleToBall, getDepthFromRobotBase
 from utils.torch_utils import select_device
 from utils.general import (check_img_size, non_max_suppression, scale_coords)
 from utils.datasets import LoadStreams
@@ -35,8 +35,8 @@ visualize = False  # visualize features
 line_thickness = 3  # bounding box thickness (pixels)
 view_img = True
 
-B = 14               #Distance between the cameras [cm]
-f = 10         #Camera lense's focal length [mm]
+B = 20.32         #Distance between the cameras [cm]
+focal = 24.81072      #Camera lense's focal length [mm]
 alpha = 52        #Camera field of view in the horisontal plane [degrees]
 
 
@@ -75,14 +75,14 @@ def yolo(path, im, im0s, device, names, model, dataset):
 
     return rects
 
-def find_depth(right_point, left_point, frame_right, frame_left, baseline,f, alpha):
+def find_depth(right_point, left_point, frame_right, frame_left, baseline, focal, alpha):
     
     # CONVERT FOCAL LENGTH f FROM [mm] TO [pixel]:
     height_right, width_right, depth_right = frame_right.shape
     height_left, width_left, depth_left = frame_left.shape
 
     if width_right == width_left:
-        f_pixel = (width_right * 0.5) / np.tan(alpha * 0.5 * np.pi/180)
+        f_pixel = (focal / (640 * 0.084)) * width_right
 
     else:
         print('Left and right camera frames do not have the same pixel width')
@@ -102,7 +102,7 @@ def find_depth(right_point, left_point, frame_right, frame_left, baseline,f, alp
 @torch.no_grad()
 def run():
 
-    #ntclient.set_vision_connected(False)
+    ntclient.set_vision_connected(False)
 
     # Load model
     imgsz = [320, 320]  # inference size (height, width)
@@ -128,14 +128,14 @@ def run():
     model.warmup(imgsz=(1, 3, *imgsz))
     for i, (path, im, im0s, vid_cap, s) in enumerate(dataset):
 
-        #ntclient.set_vision_connected(True)
+        ntclient.set_vision_connected(True)
 
         frameCount += 1
 
-        #ntclient.clear()
+        ntclient.clear()
 
-        #if not ntclient.check_connected():
-        #    ntclient.table = ntclient.waitForConnection()
+        if not ntclient.check_connected():
+           ntclient.table = ntclient.waitForConnection()
         
 
         if frameCount % frameSkip == 0:
@@ -156,14 +156,22 @@ def run():
             for key in split_raw_rects.keys():
                 trackers[key].update(split_raw_rects[key])
 
-        stereoTracker.update(trackers[0], trackers[1])
+            stereoTracker.update(trackers[0], trackers[1])
 
         for (left_cam_ball, right_cam_ball) in stereoTracker.get_pairs():
             
             # right point, left point, right cam, left cam
-            zDepth = find_depth(right_cam_ball, left_cam_ball, im0s[1], im0s[0], B, f, alpha)
-            cv2.putText(im0s[0], zDepth, (left_cam_ball[0], left_cam_ball[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-            cv2.putText(im0s[1], zDepth, (right_cam_ball[0], right_cam_ball[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            zDepth = find_depth(right_cam_ball[1][0], left_cam_ball[1][0], im0s[1], im0s[0], B, focal, alpha)
+            zDepth = round(zDepth, 2)
+            angle_x, angle_y = angleToBall(left_cam_ball[1])
+            zDepth = getDepthFromRobotBase(zDepth, angle_y)
+
+            if zDepth is not None and angle_x is not None:
+                ballString += str(left_cam_ball[0]) + "," + str(zDepth) + "," + str(angle_x) + "," + str(left_cam_ball[1][1][1]) + str(left_cam_ball[1][1][2]) + "," + str(left_cam_ball[1][1][3]) + " "
+
+            if type(zDepth) is str:
+                cv2.putText(im0s[0], zDepth, (left_cam_ball[0], left_cam_ball[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv2.putText(im0s[1], zDepth, (right_cam_ball[0], right_cam_ball[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
 
         # 1 tracker per camera
@@ -180,10 +188,7 @@ def run():
                 cv2.putText(im0s[cam], label, (xyxy[0], xyxy[1] - 10),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-                # use only one camera --> remap rectified image to original image, get new bounding box
-                # ballString += doMath(xyxy, oid, color, conf, cam)
-
-        #ntclient.add_ball(ballString)
+        ntclient.add_ball(ballString)
 
 
         cv2.imshow("ball radar", im0s[0])

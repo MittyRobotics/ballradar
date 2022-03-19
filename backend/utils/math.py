@@ -6,8 +6,46 @@ import numpy as np
 
 # height of camera in meters
 
-# ejector-side, shooter-side
+# ejector-side, shooter-side (meters)
 cam_heights = [0.8, 0.9144]
+stereo_height = 0.9144
+
+# horizontal & vertical fields of view
+hfov = 52
+vfov = 39
+
+
+def angleToBall(xyxy):
+     # image resolution
+    resolution = (640, 480)
+    # center of image
+    center = (resolution[0]/2, resolution[1]/2)
+
+    # bounding box of detected ball
+    bounding_top_left_x = (int(xyxy[0])) - center[0]
+    bounding_top_left_y = (int(xyxy[1])) - center[1]
+    bounding_btm_right_x = (int(xyxy[2])) - center[0]
+    bounding_btm_right_y = (int(xyxy[3])) - center[1]
+
+    # center of bounding box
+    center_pixel = ((bounding_top_left_x + bounding_btm_right_x) / 2, (bounding_top_left_y + bounding_btm_right_y) / 2)
+
+    # angle to center pixel in X and Y directions
+    angle_x = (center_pixel[0] / resolution[0]) * hfov
+    angle_y = (center_pixel[1] / resolution[1]) * vfov
+
+    return angle_x, angle_y
+
+# depth is in centimeters, convert to meters. depth is also the hypotenuse of triangle
+# angle to ball is in degrees, angle between height and hypotenuse
+# get base of triangle
+def getDepthFromRobotBase(depth, angleToBall):
+    # convert to radians
+    angleToBall = math.radians(angleToBall)
+    # get base of triangle
+    base = depth * math.sin(angleToBall)
+    return base
+
 
 def doMath(xyxy, ballid, ballcolor, conf, cam):
 
@@ -28,10 +66,6 @@ def doMath(xyxy, ballid, ballcolor, conf, cam):
 
     # center of bounding box
     center_pixel = ((bounding_top_left_x + bounding_btm_right_x) / 2, (bounding_top_left_y + bounding_btm_right_y) / 2)
-
-    # horizontal & vertical fields of view
-    hfov = 52
-    vfov = 39
 
     # angle to center pixel in X and Y directions
     angle_x = (center_pixel[0] / resolution[0]) * hfov

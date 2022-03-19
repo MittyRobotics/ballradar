@@ -135,6 +135,7 @@ def run():
 
         for j in range(len(trackers)):
             for i, (oid, centroid) in enumerate(trackers[j].get_data().items()):
+                print(trackers[j].get_data().items())
                 xyxy = centroid[1][0]
                 color = centroid[1][1]
                 conf = centroid[1][2]

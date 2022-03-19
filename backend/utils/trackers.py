@@ -108,23 +108,23 @@ class StereoTracker():
 
     def update(self, leftTracker, rightTracker):
         self.ball_pairs.clear()
-        leftBalls = leftTracker.get_data()
-        rightBalls = rightTracker.get_data()
+        leftBalls = leftTracker.get_data().items()
+        rightBalls = rightTracker.get_data().items()
 
-        left_centroids = [x[0] for x in leftBalls.values()]
-        right_centroids = [x[0] for x in rightBalls.values()]
+        while len(leftBalls) != 0:
 
-        while len(left_centroids) != 0:
-
-            if len(right_centroids) == 0:
+            if len(rightBalls) == 0:
                 break
 
-            leftmost_left_centroid = min(left_centroids, key = lambda t: t[1])
-            leftmost_right_centroid = min(right_centroids, key = lambda t: t[1])
+            #format: (oid, ((cx, cy), ((bx1, by1, bx2, by2), color, confidence, cam_id)))
+            leftmost_left_centroid = min(leftBalls, key = lambda t: t[1][0][0])
+            leftmost_right_centroid = min(rightBalls, key = lambda t: t[1][0][0])
 
             self.ball_pairs.append((leftmost_left_centroid, leftmost_right_centroid))
 
-            left_centroids.remove(leftmost_left_centroid)
-            right_centroids.remove(leftmost_right_centroid)
+            leftBalls.remove(leftmost_left_centroid)
+            rightBalls.remove(leftmost_right_centroid)
+
+            # todo: print out y values of both balls, to see if they are on same line
 
 
