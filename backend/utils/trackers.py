@@ -7,7 +7,7 @@ from scipy.spatial import distance as dist
 
 class CentroidTracker():
 
-    def __init__(self, maxDisappeared=40, idStartingPoint=0):
+    def __init__(self, maxDisappeared=8, idStartingPoint=0):
 
         self.uniqueID = idStartingPoint
         
@@ -32,7 +32,7 @@ class CentroidTracker():
 
     def update(self, bboxes, fromBulkFunction=False):
 
-        if len(bboxes) == 0:
+        if len(bboxes) == 0 or bboxes == None:
 
             for oid in list(self.off_screen_frames.keys()):
                 self.off_screen_frames[oid] += 1
@@ -116,7 +116,7 @@ class StereoTracker():
             if len(rightBalls) == 0:
                 break
 
-            #format: (oid, ((cx, cy), ((bx1, by1, bx2, by2), color, confidence, cam_id)))
+            #format: (oid, ((cx, cy), ((bx1, by1, bx2, by2), color, confidence, cam_id)
             leftmost_left_centroid = min(leftBalls, key = lambda t: t[1][0][0])
             leftmost_right_centroid = min(rightBalls, key = lambda t: t[1][0][0])
 

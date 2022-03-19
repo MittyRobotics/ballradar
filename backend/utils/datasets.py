@@ -39,6 +39,14 @@ IMG_FORMATS = ['bmp', 'dng', 'jpeg', 'jpg', 'mpo', 'png', 'tif', 'tiff', 'webp']
 VID_FORMATS = ['avi', 'gif', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'wmv']  # include video suffixes
 DEVICE_COUNT = max(torch.cuda.device_count(), 1)
 
+with open("high_fov_camera_calibration.txt") as f:
+    lines = f.readlines()
+    mtx = eval(lines[0].split(":")[1].strip())
+    dist = eval(lines[1].split(":")[1].strip())
+    newcameramtx = eval(lines[2].split(":")[1].strip())
+    roi = eval(lines[3].split(":")[1].strip())
+
+
 # Get orientation exif tag
 for orientation in ExifTags.TAGS.keys():
     if ExifTags.TAGS[orientation] == 'Orientation':
@@ -284,10 +292,11 @@ class LoadWebcam:  # for inference
 
 class LoadStreams:
     # YOLOv5 streamloader, i.e. `python detect.py --source 'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP streams`
-    def __init__(self, sources='streams.txt', img_size=640, stride=32, auto=True, stereo=False):
+    def __init__(self, sources='streams.txt', img_size=640, stride=32, auto=True, stereo=False, highfov=False):
         self.mode = 'stream'
         self.img_size = img_size
         self.stride = stride
+        self.highfov = highfov
         self.stereo = stereo
 
         if os.path.isfile(sources):
@@ -360,6 +369,12 @@ class LoadStreams:
         img0 = self.imgs.copy()
         if self.stereo == True:
             img0[0], img0[1] = undistortRectify(img0[0], img0[1])
+        if self.highfov == True:
+            dst = cv2.undistort(img0[0], mtx, dist, None, newcameramtx)
+            x,y,w,h = roi
+            img0[0] = dst[y:y+h, x:x+w]
+
+
         img = [letterbox(x, self.img_size, stride=self.stride, auto=self.rect and self.auto)[0] for x in img0]
 
         # Stack

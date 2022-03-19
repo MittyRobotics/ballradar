@@ -35,17 +35,14 @@ line_thickness = 3  # bounding box thickness (pixels)
 view_img = True
 
 
-trackers = []
+trackers = [CentroidTracker(), CentroidTracker(idStartingPoint=500)]
+
 
 with open("streams.txt") as f:
     sources = [x.strip()
                for x in f.read().strip().splitlines() if len(x.strip())]
 
-for i in range(len(sources)):
-    if i > 0:
-        trackers.append(CentroidTracker(idStartingPoint=500*i))
-    else:
-        trackers.append(CentroidTracker())
+
 
 
 def yolo(path, im, im0s, device, names, model, dataset):
@@ -119,7 +116,7 @@ def run():
             frameCount = 0
             ballString = ""
             raw_rects = []
-            split_raw_rects = {0: None, 1: None}
+            split_raw_rects = {0: [], 1: []}
             raw_rects = yolo(path, im, im0s, device, names, model, dataset)
 
 
@@ -133,26 +130,25 @@ def run():
             for key in split_raw_rects.keys():
                 trackers[key].update(split_raw_rects[key])
 
-        for j in range(len(trackers)):
-            for i, (oid, centroid) in enumerate(trackers[j].get_data().items()):
-                print(trackers[j].get_data().items())
-                xyxy = centroid[1][0]
-                color = centroid[1][1]
-                conf = centroid[1][2]
-                cam = centroid[1][3]
+            for j in range(len(trackers)):
+                for i, (oid, centroid) in enumerate(trackers[j].get_data().items()):
+                    xyxy = centroid[1][0]
+                    color = centroid[1][1]
+                    conf = centroid[1][2]
+                    cam = centroid[1][3]
 
-                label = f'ID: {oid}, {color}, {conf:.2f}'
-                cv2.rectangle(im0s[cam], (xyxy[0], xyxy[1]),
-                              (xyxy[2], xyxy[3]), (0, 255, 0), 2)
-                cv2.putText(im0s[cam], label, (xyxy[0], xyxy[1] - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-                ballString += doMath(xyxy, oid, color, conf, cam)
+                    # label = f'ID: {oid}, {color}, {conf:.2f}'
+                    # cv2.rectangle(im0s[cam], (xyxy[0], xyxy[1]),
+                    #             (xyxy[2], xyxy[3]), (0, 255, 0), 2)
+                    # cv2.putText(im0s[cam], label, (xyxy[0], xyxy[1] - 10),
+                    #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+                    ballString += doMath(xyxy, oid, color, conf, cam)
 
-        print(ballString)
+        print(ballString + "\n")
         ntclient.add_ball(ballString)
 
-        cv2.imshow("ball radar", im0s[0])
-        cv2.imshow("ball radar 2", im0s[1])
+        # cv2.imshow("ball radar", im0s[0])
+        # cv2.imshow("ball radar 2", im0s[1])
 
 
 if __name__ == "__main__":
