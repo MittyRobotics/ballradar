@@ -8,7 +8,8 @@ public class NetworkTablesServer {
     private static NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
     public static void run() {
-        inst.startServer("ballradarpersist", "127.0.0.1", 1735);
+        inst.startClientTeam(1351);
+        inst.startDSClient();
         Gdx.app.log("Network Tables", "Started Server");
 
     }

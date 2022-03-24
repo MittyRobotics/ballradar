@@ -62,7 +62,7 @@ public class VisionTrackingSystem extends EntitySystem {
             for(String ball : balls) {
                 String[] props = ball.split(",");
 
-                if(props.length == 0 || props.length == 1) {
+                if(props.length == 0) {
                     continue;
                 }
 
